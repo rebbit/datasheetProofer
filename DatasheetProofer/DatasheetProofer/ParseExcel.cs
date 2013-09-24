@@ -9,13 +9,16 @@ namespace DatasheetProofer
 {
     class ParseExcel
     {
-        static public string LoadDataSheet(string datasheetFileName)
+        // select tags/markers to identify the table content to be parsed
+        static private string [] keywordTags = {"Software Codes", "Note: Table 3", };
+
+        static public string[,] LoadDataSheet(string datasheetFileName)
         {
             Excel._Application xlApp;
             Excel.Workbook xlWorkBook;
             Excel.Worksheet xlWorkSheet;
-            Excel.Range firstFind = null;
-            Excel.Range currentFind = null;
+            Excel.Range startTag = null;
+            Excel.Range endTag = null;
 
             object misValue = System.Reflection.Missing.Value;
 
@@ -26,32 +29,52 @@ namespace DatasheetProofer
             // set the find range as col A
             Excel.Range tableTitles = (Excel.Range)xlWorkSheet.Columns["A:B", Type.Missing];
 
-            // search for "software code" table
-            // detailed datasheet will be considered
-            currentFind = tableTitles.Find("Software Codes",
+            // search keywords in the datasheet
+            startTag = tableTitles.Find(keywordTags[0],
                 xlWorkSheet.Cells[1, 1],
                 Excel.XlFindLookIn.xlValues,
                 Excel.XlLookAt.xlPart,
                 Excel.XlSearchOrder.xlByRows,
                 Excel.XlSearchDirection.xlNext,
                 false, false, false);
-            while (currentFind != null)
+            endTag = tableTitles.Find(keywordTags[1],
+                xlWorkSheet.Cells[1, 1],
+                Excel.XlFindLookIn.xlValues,
+                Excel.XlLookAt.xlPart,
+                Excel.XlSearchOrder.xlByRows,
+                Excel.XlSearchDirection.xlNext,
+                false, false, false);
+            
+            //get the right position for the software codes table
+//            string sAddress = startTag.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false);
+//            string eAddress = endTag.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false);
+            int [] sPos = {startTag.Row + 1, startTag.Column};
+            int [] ePos = {endTag.Row - 1, endTag.Column};
+
+//            string result = string.Empty;
+            int cols = 8;
+            string [,] specsTable = new string[ePos[0] - sPos[0] + 1, cols];
+            for (int i = 0; i <= ePos[0] - sPos[0]; i++)
             {
-                if (firstFind == null)
+                for (int j = 0; j < cols; j++)
                 {
-                    firstFind = currentFind;
+                    object rangeObject = xlWorkSheet.Cells[sPos[0] + i, sPos[1] + j];
+                    Excel.Range range = (Excel.Range)rangeObject;
+                    object rangeValue = range.Value2;
+                    if (rangeValue == null)
+                    {
+                        specsTable[i, j] = null;
+                    }
+                    else
+                    {
+                        specsTable[i, j] = rangeValue.ToString();
+                    }
+                    //result += " " + cellValue;
                 }
-                else if (currentFind.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false) == firstFind.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false))
-                {
-                    break;
-                }
-                currentFind = tableTitles.FindNext(currentFind);
             }
 
-            //get the right position for the software codes table
-            string sAddress = currentFind.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false);
             // read rows for each products
-            return sAddress;
+            return specsTable;
 
         }
     }
