@@ -34,6 +34,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.openScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,6 +52,7 @@
             // 
             this.openDatasheetToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openDatasheetToolStripMenuItem1,
+            this.openScriptToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.openDatasheetToolStripMenuItem.Name = "openDatasheetToolStripMenuItem";
             this.openDatasheetToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
@@ -87,6 +89,14 @@
             this.textBox1.TabIndex = 1;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
+            // openScriptToolStripMenuItem
+            // 
+            this.openScriptToolStripMenuItem.Enabled = false;
+            this.openScriptToolStripMenuItem.Name = "openScriptToolStripMenuItem";
+            this.openScriptToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.openScriptToolStripMenuItem.Text = "Load Scripts...";
+            this.openScriptToolStripMenuItem.Click += new System.EventHandler(this.openScriptToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -113,6 +123,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ToolStripMenuItem openScriptToolStripMenuItem;
     }
 }
 

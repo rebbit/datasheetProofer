@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace DatasheetProofer
 {
-    class ParseExcel
+    class ParseFiles
     {
         // select tags/markers to identify the table content to be parsed
         static private string [] keywordTags = {"Software Codes", "Note: Table 3", };
@@ -44,16 +45,16 @@ namespace DatasheetProofer
                 Excel.XlSearchOrder.xlByRows,
                 Excel.XlSearchDirection.xlNext,
                 false, false, false);
-            
-            //get the right position for the software codes table
-//            string sAddress = startTag.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false);
-//            string eAddress = endTag.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false);
-            int [] sPos = {startTag.Row + 1, startTag.Column};
-            int [] ePos = {endTag.Row - 1, endTag.Column};
 
-//            string result = string.Empty;
+            //get the right position for the software codes table
+            //            string sAddress = startTag.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false);
+            //            string eAddress = endTag.get_Address(false, false, Excel.XlReferenceStyle.xlA1, false, false);
+            int[] sPos = { startTag.Row + 1, startTag.Column };
+            int[] ePos = { endTag.Row - 1, endTag.Column };
+
+            //            string result = string.Empty;
             int cols = 8;
-            string [,] specsTable = new string[ePos[0] - sPos[0] + 1, cols];
+            string[,] specsTable = new string[ePos[0] - sPos[0] + 1, cols];
             for (int i = 0; i <= ePos[0] - sPos[0]; i++)
             {
                 for (int j = 0; j < cols; j++)
@@ -72,10 +73,25 @@ namespace DatasheetProofer
                     //result += " " + cellValue;
                 }
             }
-
             // read rows for each products
             return specsTable;
+        }
+
+        static public void LoadScriptFiles(string scriptFolderPath)
+        {
+
+            foreach (string fileName in Directory.GetFiles(scriptFolderPath, "*.ini", SearchOption.AllDirectories))
+            {
+                ParseScriptFile(fileName);
+            }
+
+    
+        }
+
+        static public void ParseScriptFile(string scriptFileName)
+        {
 
         }
+
     }
 }
