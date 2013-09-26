@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
+using System.Windows.Forms;
 
 namespace DatasheetProofer
 {
@@ -82,15 +83,77 @@ namespace DatasheetProofer
 
             foreach (string fileName in Directory.GetFiles(scriptFolderPath, "*.ini", SearchOption.AllDirectories))
             {
-                ParseScriptFile(fileName);
+                ReadTestScriptFile(fileName);
             }
 
     
         }
 
-        static public void ParseScriptFile(string scriptFileName)
+        static public bool ReadTestScriptFile(string scriptFileName)
         {
+            int scriptFileLinesCount;
+            int numberOfTestPoints = 0;
+            string[] testType___;
+            string[] testName___;
+            string[] testUnit___;
+            string[] testTarget_;
+            string[] testSpecMin;
+            string[] testSpecMax;
 
+            string[] fileToLinesDelimiters = new[] { "\r\n" };
+            string[] lineToParamsDelimiters = new[] { "\t", "," };
+            string scriptFileRead;
+            List<string> scriptFileLines = new List<string>();
+            string[] scriptFileLineParams;
+
+            try
+            {
+                StreamReader sr = new StreamReader(scriptFileName);
+                scriptFileRead = sr.ReadToEnd();
+                sr.Close();
+
+                if (!scriptFileRead.Equals(string.Empty))
+                {
+                    scriptFileLines.AddRange(scriptFileRead.Split(fileToLinesDelimiters, StringSplitOptions.RemoveEmptyEntries));
+                    scriptFileLinesCount = scriptFileLines.Count;
+                    testType___ = new string[scriptFileLinesCount];
+                    testName___ = new string[scriptFileLinesCount];
+                    testUnit___ = new string[scriptFileLinesCount];
+                    testTarget_ = new string[scriptFileLinesCount];
+                    testSpecMin = new string[scriptFileLinesCount];
+                    testSpecMax = new string[scriptFileLinesCount];
+
+                    for (int scriptTestOrderIndex = 1; scriptTestOrderIndex < scriptFileLinesCount; scriptTestOrderIndex++)
+                    {
+                        if (scriptFileLines[scriptTestOrderIndex].Substring(0, 1) != "'" && (!(scriptFileLines[scriptTestOrderIndex].Contains("*") && scriptFileLines.Contains("="))))
+                        {
+                            scriptFileLineParams = scriptFileLines[scriptTestOrderIndex].Split(lineToParamsDelimiters, StringSplitOptions.None);
+                            if (scriptFileLineParams[3].Trim().ToUpper() == "BIN")
+                                // skip HW&SW bins collecting
+                                continue;
+                            else if (scriptFileLineParams[0].Trim().Equals("1"))
+                            {
+                                for (int lineParamIndex = 0; lineParamIndex < 12; lineParamIndex++)
+                                {
+                                    if (lineParamIndex == 2 && scriptFileLineParams.Length > 2) testType___[numberOfTestPoints] = scriptFileLineParams[2].Trim().ToUpper();
+                                    if (lineParamIndex == 3 && scriptFileLineParams.Length > 3) testName___[numberOfTestPoints] = scriptFileLineParams[3].Trim().ToUpper();
+                                    if (lineParamIndex == 4 && scriptFileLineParams.Length > 4) testUnit___[numberOfTestPoints] = scriptFileLineParams[4].Trim().ToUpper();
+                                    if (lineParamIndex == 7 && scriptFileLineParams.Length > 7) testTarget_[numberOfTestPoints] = scriptFileLineParams[7].Trim().ToUpper();
+                                    if (lineParamIndex == 8 && scriptFileLineParams.Length > 8) testSpecMin[numberOfTestPoints] = scriptFileLineParams[8].Trim().ToUpper();
+                                    if (lineParamIndex == 9 && scriptFileLineParams.Length > 9) testSpecMax[numberOfTestPoints] = scriptFileLineParams[9].Trim().ToUpper();
+                                }
+                            }
+                            numberOfTestPoints++;
+                        } // if line starts with "'", skip it
+                    } // for loop of each line scanning
+                }
+                return true;
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show("readScriptFile process failed: \n" + er.ToString());
+                return false;
+            }
         }
 
     }
