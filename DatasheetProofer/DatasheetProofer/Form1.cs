@@ -32,20 +32,20 @@ namespace DatasheetProofer
             {
                 string datasheetFileName = openFileDialog1.FileName.ToString();
                 string [,] specsTable = ParseFiles.LoadDataSheet(datasheetFileName);
-                StringBuilder strBuilder = new StringBuilder();
-                for (int i = 0; i < specsTable.GetLength(0); i++)
-                {
-                    for (int j = 0; j < specsTable.GetLength(1) - 2; j++)
-                    {
-                        strBuilder.Append(specsTable[i, j] + "\t");
-                    }
-                    strBuilder.AppendLine();
-                }
-                textBox1.ReadOnly = false;
-                textBox1.Text = strBuilder.ToString();
-                textBox1.ReadOnly = true;
+                //StringBuilder strBuilder = new StringBuilder();
+                //for (int i = 0; i < specsTable.GetLength(0); i++)
+                //{
+                //    for (int j = 0; j < specsTable.GetLength(1) - 2; j++)
+                //    {
+                //        strBuilder.Append(specsTable[i, j] + "\t");
+                //    }
+                //    strBuilder.AppendLine();
+                //}
+                //textBox1.ReadOnly = false;
+                //textBox1.Text = strBuilder.ToString();
+                //textBox1.ReadOnly = true;
 
-                MessageBox.Show("Next: load your scripts to verify datasheet");
+                //MessageBox.Show("Next: load your scripts to verify datasheet");
                 openScriptToolStripMenuItem.Enabled = true;
             }
         }
@@ -71,7 +71,17 @@ namespace DatasheetProofer
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     textBox1.ReadOnly = false;
-                    ParseFiles.LoadScriptFiles(dialog.SelectedPath);
+                    string[,] specsTable = ParseFiles.LoadScriptFiles(dialog.SelectedPath);
+                    StringBuilder strBuilder = new StringBuilder();
+                    for (int i = 0; i < specsTable.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < specsTable.GetLength(1); j++)
+                        {
+                            strBuilder.Append(specsTable[i, j] + "\t");
+                        }
+                        strBuilder.AppendLine();
+                    }
+                    textBox1.Text = strBuilder.ToString();
                     textBox1.ReadOnly = true;
 
                 }
