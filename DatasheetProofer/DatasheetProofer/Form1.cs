@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace DatasheetProofer
 {
     public partial class Form1 : Form
@@ -18,20 +17,32 @@ namespace DatasheetProofer
             InitializeComponent();
         }
 
-        private void openDatasheetToolStripMenuItem_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-           
+            LoadDatasheet();
         }
 
-        private void openDatasheetToolStripMenuItem1_Click(object sender, EventArgs e)
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            LoadScripts();
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////
+        private void LoadDatasheet()
+        {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "All Excel Files(*.xlsx)|*.xlsx";
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string datasheetFileName = openFileDialog1.FileName.ToString();
-                string [,] specsTable = ParseFiles.LoadDataSheet(datasheetFileName);
+                string[,] specsTable = FileParser.LoadDataSheet(datasheetFileName);
                 //StringBuilder strBuilder = new StringBuilder();
                 //for (int i = 0; i < specsTable.GetLength(0); i++)
                 //{
@@ -46,21 +57,28 @@ namespace DatasheetProofer
                 //textBox1.ReadOnly = true;
 
                 //MessageBox.Show("Next: load your scripts to verify datasheet");
-                openScriptToolStripMenuItem.Enabled = true;
+                //                openScriptToolStripMenuItem.Enabled = true;
+                var rowCount = specsTable.GetLength(0);
+                var rowLength = specsTable.GetLength(1);
+                dataGridView1.ColumnCount = rowLength;
+                for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex)
+                {
+                    var row = new DataGridViewRow();
+                    string myVal;
+                    for (int columnIndex = 0; columnIndex < rowLength; ++columnIndex)
+                    {
+                        myVal = specsTable[rowIndex, columnIndex];
+                        if (myVal == null) myVal = string.Empty;
+                        row.Cells.Add(new DataGridViewTextBoxCell() { Value = myVal });
+                    }
+                    dataGridView1.Rows.Add(row);
+                }
+                button2.Enabled = true;
             }
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void openScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadScripts()
         {
             string startupPath = Application.StartupPath;
             using (FolderBrowserDialog dialog = new FolderBrowserDialog())
@@ -70,32 +88,14 @@ namespace DatasheetProofer
                 dialog.RootFolder = Environment.SpecialFolder.MyComputer;
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    textBox1.ReadOnly = false;
-                    string[,] specsTable = ParseFiles.LoadScriptFiles(dialog.SelectedPath);
-                    StringBuilder strBuilder = new StringBuilder();
-                    for (int i = 0; i < specsTable.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < specsTable.GetLength(1); j++)
-                        {
-                            strBuilder.Append(specsTable[i, j] + "\t");
-                        }
-                        strBuilder.AppendLine();
-                    }
-                    textBox1.Text = strBuilder.ToString();
-                    textBox1.ReadOnly = true;
+                    VerificationStatus[,] specsTableStatus = FileParser.LoadScriptFiles(dialog.SelectedPath);
+                    // update front/bg colors based on the status table
 
                 }
             }
 
-            //OpenFileDialog openFileDialog2 = new OpenFileDialog();
-            //openFileDialog2.Filter = "All Script Files(*.ini)|*.ini";
-            //if (openFileDialog2.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    string scriptFileName = openFileDialog2.FileName.ToString();
-            //    string[,] specsTable = ParseFiles.LoadScriptFiles(scriptFileName);
-            //    StringBuilder strBuilder = new StringBuilder();
-            //}
 
         }
+
     }
 }

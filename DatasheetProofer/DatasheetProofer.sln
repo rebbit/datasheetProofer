@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatasheetProofer", "DatasheetProofer\DatasheetProofer.csproj", "{92CCE5E6-D312-413D-B9A9-1CA221D0DD7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatasheetProofer", "DatasheetProofer\DatasheetProofer.csproj", "{DB85CA3C-EFFB-4595-B97A-E18C560BCA14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{92CCE5E6-D312-413D-B9A9-1CA221D0DD7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92CCE5E6-D312-413D-B9A9-1CA221D0DD7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92CCE5E6-D312-413D-B9A9-1CA221D0DD7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92CCE5E6-D312-413D-B9A9-1CA221D0DD7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB85CA3C-EFFB-4595-B97A-E18C560BCA14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB85CA3C-EFFB-4595-B97A-E18C560BCA14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB85CA3C-EFFB-4595-B97A-E18C560BCA14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB85CA3C-EFFB-4595-B97A-E18C560BCA14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
