@@ -12,6 +12,9 @@ namespace DatasheetProofer
 {
     public partial class Form1 : Form
     {
+        string[,] specsTable;
+        VerificationStatus[,] specsTableStatus;
+
         public Form1()
         {
             InitializeComponent();
@@ -41,8 +44,9 @@ namespace DatasheetProofer
             openFileDialog1.Filter = "All Excel Files(*.xlsx)|*.xlsx";
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                specsTable = new string[,] { };
                 string datasheetFileName = openFileDialog1.FileName.ToString();
-                string[,] specsTable = FileParser.LoadDataSheet(datasheetFileName);
+                specsTable = FileParser.LoadDataSheet(datasheetFileName);
                 //StringBuilder strBuilder = new StringBuilder();
                 //for (int i = 0; i < specsTable.GetLength(0); i++)
                 //{
@@ -58,8 +62,8 @@ namespace DatasheetProofer
 
                 //MessageBox.Show("Next: load your scripts to verify datasheet");
                 //                openScriptToolStripMenuItem.Enabled = true;
-                var rowCount = specsTable.GetLength(0);
-                var rowLength = specsTable.GetLength(1);
+                int rowCount = specsTable.GetLength(0);
+                int rowLength = specsTable.GetLength(1);
                 dataGridView1.ColumnCount = rowLength;
                 for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex)
                 {
@@ -86,14 +90,46 @@ namespace DatasheetProofer
                 dialog.Description = "Open a script folder";
                 dialog.ShowNewFolderButton = false;
                 dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+                specsTableStatus = new VerificationStatus[,]{};
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    VerificationStatus[,] specsTableStatus = FileParser.LoadScriptFiles(dialog.SelectedPath);
+                    specsTableStatus = FileParser.LoadScriptFiles(dialog.SelectedPath);
                     // update front/bg colors based on the status table
-
+                    UpdateSpecsTable();
                 }
             }
 
+
+        }
+
+        private void UpdateSpecsTable()
+        {
+            int rowCount = specsTableStatus.GetLength(0);
+            int colCount = specsTableStatus.GetLength(1);
+            for (int i = 1; i < rowCount; i++)
+            {
+                for (int j = 0; j < colCount; j++)
+                {
+                    switch (specsTableStatus[i, j])
+                    {
+                        case VerificationStatus.GREEN:
+                            dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.Green;
+                            break;
+                        case VerificationStatus.RED:
+                            dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.Red;
+                            break;
+                        case VerificationStatus.GRAY:
+                        default:
+                            dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                            break;
+                    }
+
+                }
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
         }
 

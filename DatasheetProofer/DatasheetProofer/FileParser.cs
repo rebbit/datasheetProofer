@@ -87,6 +87,10 @@ namespace DatasheetProofer
                     if (rangeValue != null)
                     {
                         softwareCodeTable[i, j] = rangeValue.ToString().Trim();
+                        if (i == 0)
+                        {
+                            softwareCodeTable[i, j] = softwareCodeTable[i, j].ToUpper();
+                        }
                     }
                 }
             }
