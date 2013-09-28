@@ -267,7 +267,14 @@ namespace DatasheetProofer
                             string decNumber = Convert.ToInt32(hexNumber, 16).ToString();
                             if (strArray[4].Equals(decNumber) && strArray[5].Equals(decNumber))
                             {
-                                softwareCodeTableStatus[indexOfMatchedModelInSwCodeTable, 1] = VerificationStatus.GREEN;
+                                if (softwareCodeTableStatus[indexOfMatchedModelInSwCodeTable, 1] == VerificationStatus.GRAY)
+                                {
+                                    softwareCodeTableStatus[indexOfMatchedModelInSwCodeTable, 1] = VerificationStatus.GREEN;
+                                }
+                            }
+                            else // may need more robust check
+                            {
+                                softwareCodeTableStatus[indexOfMatchedModelInSwCodeTable, 1] = VerificationStatus.RED;
                             }
                         }
                     }
