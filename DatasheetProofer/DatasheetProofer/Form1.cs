@@ -113,14 +113,14 @@ namespace DatasheetProofer
                     switch (specsTableStatus[i, j])
                     {
                         case VerificationStatus.GREEN:
-                            dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.Green;
+                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Green;
                             break;
                         case VerificationStatus.RED:
-                            dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.Red;
+                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Red;
                             break;
                         case VerificationStatus.GRAY:
                         default:
-                            dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+//                            dataGridView1.Rows[i].Cells[j].Style.FontColor = Color.Black;
                             break;
                     }
 
