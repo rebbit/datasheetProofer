@@ -173,6 +173,9 @@ namespace DatasheetProofer
 
                     for (int scriptTestOrderIndex = 1; scriptTestOrderIndex < scriptFileLinesCount; scriptTestOrderIndex++)
                     {
+                        // Current "rules" for commenting in the script file:
+                        //   - line starting with "'" usually comments itself
+                        //   - multiple comments usually start with "*"
                         if (scriptFileLines[scriptTestOrderIndex].Substring(0, 1) != "'" && (!(scriptFileLines[scriptTestOrderIndex].Contains("*") && scriptFileLines.Contains("="))))
                         {
                             scriptFileLineParams = scriptFileLines[scriptTestOrderIndex].Split(lineToParamsDelimiters, StringSplitOptions.None);
