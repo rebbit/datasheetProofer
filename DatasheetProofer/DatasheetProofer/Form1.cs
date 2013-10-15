@@ -14,10 +14,14 @@ namespace DatasheetProofer
     {
         string[,] specsTable;
         VerificationStatus[,] specsTableStatus;
+        FileParser fileparser;
+        ScriptParser scriptparser;
 
         public Form1()
         {
             InitializeComponent();
+            fileparser = new FileParser();
+            scriptparser = new ScriptParser();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -33,11 +37,25 @@ namespace DatasheetProofer
 
         private void button2_Click(object sender, EventArgs e)
         {
-            LoadScripts();
+            LoadScripts(specsTable);
         }
 
+        private void loadDatasheetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadDatasheet();
+        }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////
+        private void loadScriptsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadScripts(specsTable);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Environment.Exit(0);
+        }
+
+        ////////////////////////////////datssheet handling/////////////////////////////////////////////
         private void LoadDatasheet()
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -46,60 +64,51 @@ namespace DatasheetProofer
             {
                 specsTable = new string[,] { };
                 string datasheetFileName = openFileDialog1.FileName.ToString();
-                specsTable = FileParser.LoadDataSheet(datasheetFileName);
-                //StringBuilder strBuilder = new StringBuilder();
-                //for (int i = 0; i < specsTable.GetLength(0); i++)
-                //{
-                //    for (int j = 0; j < specsTable.GetLength(1) - 2; j++)
-                //    {
-                //        strBuilder.Append(specsTable[i, j] + "\t");
-                //    }
-                //    strBuilder.AppendLine();
-                //}
-                //textBox1.ReadOnly = false;
-                //textBox1.Text = strBuilder.ToString();
-                //textBox1.ReadOnly = true;
+                fileparser.LoadDataSheet(datasheetFileName, out specsTable);
+                ShowDatasheet();
 
-                //MessageBox.Show("Next: load your scripts to verify datasheet");
-                //                openScriptToolStripMenuItem.Enabled = true;
-                int rowCount = specsTable.GetLength(0);
-                int rowLength = specsTable.GetLength(1);
-                dataGridView1.ColumnCount = rowLength;
-                for (int rowIndex = 0; rowIndex < rowCount; ++rowIndex)
-                {
-                    var row = new DataGridViewRow();
-                    string myVal;
-                    for (int columnIndex = 0; columnIndex < rowLength; ++columnIndex)
-                    {
-                        myVal = specsTable[rowIndex, columnIndex];
-                        if (myVal == null) myVal = string.Empty;
-                        row.Cells.Add(new DataGridViewTextBoxCell() { Value = myVal });
-                    }
-                    dataGridView1.Rows.Add(row);
-                }
-                button2.Enabled = true;
+                //enable load scripts button and menu item for next step.
+                loadScriptsButton.Enabled = true;
+                loadScriptsToolStripMenuItem.Enabled = true;
             }
         }
 
+        private void ShowDatasheet()
+        {
+            int rows = specsTable.GetLength(0);
+            int cols = specsTable.GetLength(1);
+            dataGridView1.ColumnCount = cols;
+            for (int i = 0; i < rows; ++i)
+            {
+                var row = new DataGridViewRow();
+                string myVal;
+                for (int j = 0; j < cols; ++j)
+                {
+                    myVal = specsTable[i, j];
+                    if (myVal == null) myVal = string.Empty;
+                    row.Cells.Add(new DataGridViewTextBoxCell() { Value = myVal });
+                }
+                dataGridView1.Rows.Add(row);
+            }
+        }
 
-        private void LoadScripts()
+        ////////////////////////////////scripts handling/////////////////////////////////////////////
+        private void LoadScripts(string[,] specsTable)
         {
             string startupPath = Application.StartupPath;
             using (FolderBrowserDialog dialog = new FolderBrowserDialog())
             {
                 dialog.Description = "Open a script folder";
-                dialog.ShowNewFolderButton = false;
-                dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+                dialog.ShowNewFolderButton = true;
+                dialog.RootFolder = Environment.SpecialFolder.Desktop;
                 specsTableStatus = new VerificationStatus[,]{};
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    specsTableStatus = FileParser.LoadScriptFiles(dialog.SelectedPath);
+                    scriptparser.LoadScriptFiles(dialog.SelectedPath, specsTable, out specsTableStatus);
                     // update front/bg colors based on the status table
                     UpdateSpecsTable();
                 }
             }
-
-
         }
 
         private void UpdateSpecsTable()
@@ -132,6 +141,7 @@ namespace DatasheetProofer
         {
 
         }
+
 
     }
 }
